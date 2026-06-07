@@ -1,0 +1,20 @@
+{
+  "name": "ai-integration",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AI-Integration monorepo with React frontend and Node.js Express backend using TypeScript",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=@ai-integration/frontend",
+    "dev:backend": "npm run dev --workspace=@ai-integration/backend",
+    "build": "npm run build --workspaces",
+    "build:frontend": "npm run build --workspace=@ai-integration/frontend",
+    "build:backend": "npm run build --workspace=@ai-integration/backend",
+    "typecheck": "npm run typecheck --workspaces"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

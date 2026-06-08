@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  instagramAccessToken: {
+    type: String,
+  },
+  instagramAccountId: {
+    type: String,
+  },
 }, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);

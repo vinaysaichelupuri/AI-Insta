@@ -40,7 +40,7 @@ export const exportSlidesToPng = async (slides: ISlide[], postId: string): Promi
       slideNumber: slide.slideNumber
     });
 
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: 'load' });
     
     const imagePath = path.join(outDir, `slide_${slide.slideNumber}.png`);
     await page.screenshot({ path: imagePath, type: 'png' });

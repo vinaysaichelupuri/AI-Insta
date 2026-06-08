@@ -1,10 +1,12 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import topicRoutes from "./routes/topicRoutes";
-
-dotenv.config();
+import authRoutes from "./routes/authRoutes";
+import postRoutes from "./routes/postRoutes";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
@@ -13,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/topics", topicRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json({

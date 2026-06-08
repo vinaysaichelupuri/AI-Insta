@@ -1,7 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export interface GeneratedContent {
   slides: {
     slideNumber: number;
@@ -15,6 +13,7 @@ export interface GeneratedContent {
 
 export const generateCarousel = async (topic: string): Promise<GeneratedContent> => {
   console.log(`[GeminiService] Generating content for topic: "${topic}"...`);
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',

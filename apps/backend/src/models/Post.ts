@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IPost extends Document {
   topic: string;
-  status: "PENDING" | "GENERATING" | "REVIEW" | "PUBLISHED" | "FAILED";
+  status: "DRAFT" | "RENDERING" | "PENDING_REVIEW" | "APPROVED" | "PUBLISHED" | "REJECTED" | "FAILED";
   createdAt: Date;
   publishedAt?: Date;
   caption?: string;
@@ -13,8 +13,8 @@ const PostSchema = new Schema<IPost>({
   topic: { type: String, required: true, maxlength: 200 },
   status: {
     type: String,
-    enum: ["PENDING", "GENERATING", "REVIEW", "PUBLISHED", "FAILED"],
-    default: "PENDING",
+    enum: ["DRAFT", "RENDERING", "PENDING_REVIEW", "APPROVED", "PUBLISHED", "REJECTED", "FAILED"],
+    default: "DRAFT",
   },
   createdAt: { type: Date, default: Date.now },
   publishedAt: { type: Date },

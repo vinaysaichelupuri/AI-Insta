@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 1080px;
+      height: 1350px;
+      background-color: #ffffff;
+      color: #000000;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    .container {
+      flex: 1;
+      padding: 100px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Poppins', sans-serif;
+      margin: 0 0 40px 0;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 100px;
+    }
+
+    h2 {
+      font-size: 80px;
+    }
+
+    p {
+      font-size: 45px;
+      line-height: 1.5;
+      color: #333333;
+      margin: 0;
+    }
+
+    .accent {
+      color: #3B82F6; /* Configurable accent blue */
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 80px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 30px;
+      color: #666666;
+      border-top: 4px solid #f0f0f0;
+      padding-top: 30px;
+    }
+
+    /* Template specific styles */
+    .template-cover {
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+    .template-cover h1 {
+      font-size: 120px;
+    }
+    
+    .template-fact {
+      background-color: #F8FAFC;
+      border-left: 20px solid #3B82F6;
+      padding: 60px;
+      border-radius: 0 20px 20px 0;
+    }
+
+    .template-cta {
+      text-align: center;
+      background-color: #3B82F6;
+      color: white;
+    }
+    .template-cta h2, .template-cta p {
+      color: white;
+    }
+    .template-cta .footer {
+      border-color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.8);
+    }
+    .slide-badge {
+      position: absolute;
+      top: 80px;
+      right: 80px;
+      background: #f0f0f0;
+      color: #333;
+      padding: 10px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+  {{#if (eq templateType 'Cover')}}
+    <div class="container template-cover">
+      <h1>{{title}}</h1>
+      <p class="accent">{{content}}</p>
+    </div>
+  {{else if (eq templateType 'CTA')}}
+    <div class="container template-cta">
+      <h2>{{title}}</h2>
+      <p>{{content}}</p>
+    </div>
+  {{else if (eq templateType 'Fact')}}
+    <div class="slide-badge">{{slideNumber}}/7</div>
+    <div class="container">
+      <h2>{{title}}</h2>
+      <div class="template-fact">
+        <p>{{content}}</p>
+      </div>
+    </div>
+  {{else}}
+    <div class="slide-badge">{{slideNumber}}/7</div>
+    <div class="container">
+      <h2 class="accent">{{title}}</h2>
+      <p>{{content}}</p>
+    </div>
+  {{/if}}
+
+  <div class="footer">
+    <span>@ai-insta</span>
+    <span>Swipe ➡️</span>
+  </div>
+</body>
+</html>

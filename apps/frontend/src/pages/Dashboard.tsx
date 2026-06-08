@@ -140,20 +140,39 @@ export const Dashboard: React.FC = () => {
         {/* ── Error ───────────────────────────────────────────────────── */}
         {(isFailed || pollError) && (
           <div className="max-w-md mx-auto mt-10 p-6 bg-red-50 border border-red-200 rounded-xl text-center">
-            <p className="text-red-700 font-semibold mb-1">
-              {isFailed ? "Content generation failed." : pollError}
-            </p>
-            <p className="text-sm text-red-500 mb-4">
-              {isFailed ? "The AI pipeline encountered an error. Please try again." : ""}
-            </p>
+            {isFailed && generatingPost?.failReason?.includes('QUOTA_EXHAUSTED') ? (
+              <>
+                <div className="text-4xl mb-3">⏳</div>
+                <p className="text-orange-700 font-semibold text-lg mb-2">
+                  Daily API Quota Reached
+                </p>
+                <p className="text-sm text-orange-600 mb-4">
+                  The Gemini free tier allows <strong>20 requests per day</strong>. 
+                  You've used all of today's quota. It resets at <strong>midnight UTC</strong>.
+                </p>
+                <p className="text-xs text-gray-500 mb-4">
+                  To generate more content now, add a paid Gemini API key in the backend <code>.env</code> file.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-red-700 font-semibold mb-1">
+                  {isFailed ? "Content generation failed." : pollError}
+                </p>
+                <p className="text-sm text-red-500 mb-4">
+                  {isFailed ? "The AI pipeline encountered an error. Please try again." : ""}
+                </p>
+              </>
+            )}
             <button
               onClick={handleNewPost}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
             >
-              Try Again
+              Back to Dashboard
             </button>
           </div>
         )}
+
 
         {/* ── Preview / Review ─────────────────────────────────────────── */}
         {isPendingReview && generatingPost && (

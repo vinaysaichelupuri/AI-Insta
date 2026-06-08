@@ -25,6 +25,7 @@ export interface IPost {
   publishedAt?: string;
   caption?: string;
   hashtags?: string[];
+  failReason?: string;  // set when status is FAILED
 }
 
 export interface ISlide {

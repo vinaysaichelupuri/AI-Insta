@@ -2,6 +2,36 @@ import { generateCarousel } from "./geminiService";
 import { exportSlidesToPng } from "./renderService";
 import { Post, Slide, GeneratedAsset } from "../models/Post";
 
+// Parses the retryDelay from a Gemini 429 error (e.g. "36s" → 36000ms)
+const getRetryDelayMs = (err: any): number => {
+  try {
+    const body = typeof err.message === "string" ? JSON.parse(err.message) : err;
+    const retryInfo = body?.error?.details?.find(
+      (d: any) => d["@type"] === "type.googleapis.com/google.rpc.RetryInfo"
+    );
+    if (retryInfo?.retryDelay) {
+      const seconds = parseFloat(retryInfo.retryDelay.replace("s", ""));
+      return Math.ceil(seconds) * 1000;
+    }
+  } catch {}
+  return 5000; // default 5s fallback
+};
+
+// Returns true if this is a daily quota exhaustion (not just a rate-limit burst)
+const isDailyQuotaExhausted = (err: any): boolean => {
+  try {
+    const body = typeof err.message === "string" ? JSON.parse(err.message) : err;
+    const violations = body?.error?.details?.find(
+      (d: any) => d["@type"] === "type.googleapis.com/google.rpc.QuotaFailure"
+    )?.violations ?? [];
+    return violations.some((v: any) =>
+      v.quotaId?.toLowerCase().includes("perday") ||
+      v.quotaId?.toLowerCase().includes("per_day")
+    );
+  } catch {}
+  return false;
+};
+
 export const triggerGeneration = async (topic: string, postId: string) => {
   console.log(`[AgentService] Starting content generation for topic: "${topic}" (Post ID: ${postId})`);
   
@@ -9,18 +39,40 @@ export const triggerGeneration = async (topic: string, postId: string) => {
     // 1. Update Post Status
     await Post.findByIdAndUpdate(postId, { status: "RENDERING" });
 
-    // 2. Generate Text Content (with retries for transient failures)
+    // 2. Generate Text Content — respects retry-delay from API, skips if daily quota gone
     let generatedContent;
-    let attempts = 0;
-    while (attempts < 3) {
+    const MAX_ATTEMPTS = 3;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
         generatedContent = await generateCarousel(topic);
         break; // Success
-      } catch (err) {
-        attempts++;
-        console.error(`[AgentService] Gemini API failure (Attempt ${attempts}/3):`, err);
-        if (attempts >= 3) throw new Error("Gemini generation failed after 3 attempts");
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait before retry
+      } catch (err: any) {
+        const isQuotaError = err?.status === 429 || err?.message?.includes('"code":429');
+        const isDaily = isDailyQuotaExhausted(err);
+
+        console.error(`[AgentService] Gemini API failure (Attempt ${attempt}/${MAX_ATTEMPTS}) [429=${isQuotaError}, daily=${isDaily}]`);
+
+        if (isDaily) {
+          // Daily quota exhausted — no point retrying today
+          throw new Error(
+            "QUOTA_EXHAUSTED: Your Gemini free-tier daily quota (20 requests/day) is used up. " +
+            "Please wait until midnight (UTC) for it to reset, or add a paid API key."
+          );
+        }
+
+        if (attempt >= MAX_ATTEMPTS) {
+          throw new Error(`Gemini generation failed after ${MAX_ATTEMPTS} attempts`);
+        }
+
+        if (isQuotaError) {
+          // Respect the API's requested retry delay
+          const delayMs = getRetryDelayMs(err);
+          console.log(`[AgentService] Rate-limited. Waiting ${delayMs / 1000}s before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+        } else {
+          // Transient error — short backoff
+          await new Promise(resolve => setTimeout(resolve, 3000));
+        }
       }
     }
 
@@ -51,10 +103,7 @@ export const triggerGeneration = async (topic: string, postId: string) => {
 
     // 6. Persist Generated Assets
     for (const path of imagePaths) {
-      const asset = new GeneratedAsset({
-        postId,
-        imagePath: path
-      });
+      const asset = new GeneratedAsset({ postId, imagePath: path });
       await asset.save();
     }
 
@@ -62,8 +111,14 @@ export const triggerGeneration = async (topic: string, postId: string) => {
     await Post.findByIdAndUpdate(postId, { status: "PENDING_REVIEW" });
     console.log(`[AgentService] Pipeline completed successfully for post ${postId}`);
 
-  } catch (error) {
-    console.error(`[AgentService] Pipeline failed for post ${postId}:`, error);
-    await Post.findByIdAndUpdate(postId, { status: "FAILED" });
+  } catch (error: any) {
+    const isQuotaError = error?.message?.startsWith("QUOTA_EXHAUSTED");
+    console.error(`[AgentService] Pipeline failed for post ${postId}:`, 
+      isQuotaError ? error.message : error
+    );
+    await Post.findByIdAndUpdate(postId, {
+      status: "FAILED",
+      ...(isQuotaError ? { failReason: error.message } : {})
+    });
   }
 };

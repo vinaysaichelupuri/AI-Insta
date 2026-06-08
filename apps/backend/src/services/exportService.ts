@@ -41,7 +41,7 @@ export class ExportService {
         const filename = `${postId}_slide_${i + 1}.png`;
         const filePath = path.join(this.outputDir, filename);
 
-        await page.setContent(html, { waitUntil: 'networkidle0' });
+        await page.setContent(html, { waitUntil: 'load' });
         await page.screenshot({ path: filePath, type: 'png' });
         
         exportedPaths.push(filePath);

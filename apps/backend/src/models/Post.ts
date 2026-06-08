@@ -7,6 +7,7 @@ export interface IPost extends Document {
   publishedAt?: Date;
   caption?: string;
   hashtags?: string[];
+  failReason?: string;
 }
 
 const PostSchema = new Schema<IPost>({
@@ -20,6 +21,7 @@ const PostSchema = new Schema<IPost>({
   publishedAt: { type: Date },
   caption: { type: String },
   hashtags: [{ type: String }],
+  failReason: { type: String },
 });
 
 export const Post = mongoose.model<IPost>("Post", PostSchema);

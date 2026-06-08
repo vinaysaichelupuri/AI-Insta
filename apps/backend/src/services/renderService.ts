@@ -12,12 +12,13 @@ Handlebars.registerHelper('eq', function (a, b) {
 export const exportSlidesToPng = async (slides: ISlide[], postId: string): Promise<string[]> => {
   console.log(`[RenderService] Rendering ${slides.length} slides for post ${postId}`);
   
-  const templatePath = path.join(__dirname, '../templates/base.hbs');
+  const templatePath = path.join(__dirname, '../templates/base.hbs'); // __dirname = src/services, so this resolves correctly
   const templateSource = fs.readFileSync(templatePath, 'utf8');
   const template = Handlebars.compile(templateSource);
 
   // Ensure output directory exists
-  const outDir = path.join(__dirname, '../../assets/generated', postId);
+  // Use process.cwd() so the path matches what the static server in index.ts serves
+  const outDir = path.join(process.cwd(), 'assets', 'generated', postId);
   if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir, { recursive: true });
   }
@@ -40,7 +41,9 @@ export const exportSlidesToPng = async (slides: ISlide[], postId: string): Promi
       slideNumber: slide.slideNumber
     });
 
-    await page.setContent(html, { waitUntil: 'load' });
+    await page.setContent(html, { waitUntil: 'load', timeout: 60000 });
+    // Wait for all web fonts (Google Fonts CDN) to finish loading
+    await page.evaluate(() => (document as any).fonts.ready);
     
     const imagePath = path.join(outDir, `slide_${slide.slideNumber}.png`);
     await page.screenshot({ path: imagePath, type: 'png' });

@@ -1,142 +1,730 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
+    /* ═══════════════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════════════ */
+    :root {
+      /* Colors */
+      --bg:            #080C18;
+      --bg-alt:        #0D1223;
+      --card:          rgba(255, 255, 255, 0.045);
+      --card-border:   rgba(255, 255, 255, 0.085);
+      --accent-a:      #6366F1;
+      --accent-b:      #38BDF8;
+      --accent-grad:   linear-gradient(135deg, #6366F1 0%, #38BDF8 100%);
+      --accent-glow:   rgba(99, 102, 241, 0.25);
+      --text-1:        #F1F5F9;
+      --text-2:        #94A3B8;
+      --text-3:        #475569;
+      --success:       #34D399;
+
+      /* Typography */
+      --font-heading:  'Poppins', sans-serif;
+      --font-body:     'Inter', sans-serif;
+
+      /* Spacing scale (px) */
+      --s1: 20px;
+      --s2: 40px;
+      --s3: 60px;
+      --s4: 80px;
+      --s5: 100px;
+      --s6: 120px;
+
+      /* Canvas */
+      --canvas-w: 1080px;
+      --canvas-h: 1350px;
+      --footer-h: 96px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width:  var(--canvas-w);
+      height: var(--canvas-h);
+      overflow: hidden;
+    }
+
     body {
-      margin: 0;
-      padding: 0;
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-1);
+      position: relative;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SHARED UTILITIES
+    ═══════════════════════════════════════════════════════ */
+
+    /* Ambient background orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle dot grid overlay */
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+      background-size: 44px 44px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Progress bar (absolute, top of slide) */
+    .progress-track {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      z-index: 10;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-grad);
+      border-radius: 0 99px 99px 0;
+    }
+
+    /* Shared footer */
+    .slide-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: var(--footer-h);
+      padding: 0 var(--s4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      z-index: 10;
+    }
+
+    .footer-brand {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 700;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+
+    .footer-swipe {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--text-3);
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .swipe-pill {
+      width: 48px;
+      height: 48px;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text-2);
+    }
+
+    /* Glassmorphism card */
+    .glass-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top accent line on card */
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent-grad);
+    }
+
+
+    /* ═══════════════════════════════════════════════════════
+       COVER SLIDE
+    ═══════════════════════════════════════════════════════ */
+    .slide-cover {
       width: 1080px;
       height: 1350px;
-      background-color: #ffffff;
-      color: #000000;
-      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* large top-right orb */
+    .cover-orb-a {
+      width: 720px; height: 720px;
+      background: #6366F1;
+      opacity: 0.14;
+      top: -260px; right: -180px;
+    }
+
+    /* bottom-left orb */
+    .cover-orb-b {
+      width: 480px; height: 480px;
+      background: #38BDF8;
+      opacity: 0.10;
+      bottom: -120px; left: -80px;
+    }
+
+    .cover-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 var(--s4);
+      max-width: 960px;
+    }
+
+    /* "Educational Thread" badge */
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: rgba(99,102,241,0.14);
+      border: 1px solid rgba(99,102,241,0.32);
+      border-radius: 100px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #A5B4FC;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 56px;
+    }
+
+    .cover-badge-dot {
+      width: 8px; height: 8px;
+      background: #818CF8;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cover-h1 {
+      font-family: var(--font-heading);
+      font-size: 118px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -3px;
+      color: var(--text-1);
+      margin-bottom: 44px;
+    }
+
+    .cover-subtitle {
+      font-size: 38px;
+      line-height: 1.55;
+      color: var(--text-2);
+      font-weight: 400;
+      margin-bottom: 80px;
+      max-width: 820px;
+    }
+
+    /* Swipe CTA */
+    .cover-swipe {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--text-3);
+      font-size: 27px;
+      font-weight: 500;
+    }
+
+    .cover-swipe-arrow {
+      width: 64px; height: 64px;
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: var(--text-2);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Large ghost brand watermark behind content */
+    .cover-watermark {
+      position: absolute;
+      bottom: 110px;
+      left: 0; right: 0;
+      text-align: center;
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      z-index: 3;
+      letter-spacing: -0.3px;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════
+       CONTENT SLIDES  (Definition · Concept · Example)
+    ═══════════════════════════════════════════════════════ */
+    .slide-content {
+      width: 1080px;
+      height: 1350px;
       display: flex;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
+      background: var(--bg);
     }
-    
-    .container {
+
+    /* subtle right orb */
+    .content-orb {
+      width: 380px; height: 380px;
+      background: #6366F1;
+      opacity: 0.09;
+      top: -80px; right: -80px;
+    }
+
+    /* giant ghost slide number */
+    .ghost-number {
+      position: absolute;
+      top: 36px; left: 56px;
+      font-family: var(--font-heading);
+      font-size: 220px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.028);
+      line-height: 1;
+      letter-spacing: -12px;
+      user-select: none;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .content-body {
       flex: 1;
-      padding: 100px 80px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      padding: var(--s3) var(--s4);
+      padding-bottom: calc(var(--footer-h) + var(--s3));
+      position: relative;
+      z-index: 2;
     }
 
-    h1, h2, h3 {
-      font-family: 'Poppins', sans-serif;
-      margin: 0 0 40px 0;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-
-    h1 {
-      font-size: 100px;
-    }
-
-    h2 {
-      font-size: 80px;
-    }
-
-    p {
-      font-size: 45px;
-      line-height: 1.5;
-      color: #333333;
-      margin: 0;
-    }
-
-    .accent {
-      color: #3B82F6; /* Configurable accent blue */
-    }
-
-    .footer {
-      position: absolute;
-      bottom: 80px;
-      left: 80px;
-      right: 80px;
+    /* Top meta row */
+    .meta-row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      font-size: 30px;
-      color: #666666;
-      border-top: 4px solid #f0f0f0;
-      padding-top: 30px;
+      margin-bottom: var(--s3);
     }
 
-    /* Template specific styles */
-    .template-cover {
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-    }
-    .template-cover h1 {
-      font-size: 120px;
-    }
-    
-    .template-fact {
-      background-color: #F8FAFC;
-      border-left: 20px solid #3B82F6;
-      padding: 60px;
-      border-radius: 0 20px 20px 0;
-    }
-
-    .template-cta {
-      text-align: center;
-      background-color: #3B82F6;
-      color: white;
-    }
-    .template-cta h2, .template-cta p {
-      color: white;
-    }
-    .template-cta .footer {
-      border-color: rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.8);
-    }
-    .slide-badge {
-      position: absolute;
-      top: 80px;
-      right: 80px;
-      background: #f0f0f0;
-      color: #333;
-      padding: 10px 30px;
-      border-radius: 50px;
+    .template-label {
+      font-size: 22px;
       font-weight: 600;
-      font-size: 30px;
+      color: var(--accent-a);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
+
+    .slide-counter {
+      font-size: 24px;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+
+    .content-h2 {
+      font-family: var(--font-heading);
+      font-size: 74px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--text-1);
+      margin-bottom: 48px;
+    }
+
+    .content-card {
+      padding: 56px 60px;
+    }
+
+    .content-card p {
+      font-size: 42px;
+      line-height: 1.65;
+      color: #CBD5E1;
+      font-weight: 400;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════
+       FACT SLIDE
+    ═══════════════════════════════════════════════════════ */
+    .slide-fact {
+      width: 1080px;
+      height: 1350px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .fact-orb-a {
+      width: 600px; height: 600px;
+      background: #38BDF8;
+      opacity: 0.10;
+      bottom: -200px; right: -100px;
+    }
+
+    .fact-orb-b {
+      width: 280px; height: 280px;
+      background: #6366F1;
+      opacity: 0.12;
+      top: 80px; left: -40px;
+    }
+
+    .fact-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: var(--s3) var(--s4);
+      padding-bottom: calc(var(--footer-h) + var(--s3));
+      position: relative;
+      z-index: 2;
+    }
+
+    /* "Did You Know?" badge */
+    .fact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 38px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(56,189,248,0.18));
+      border: 1px solid rgba(99,102,241,0.35);
+      border-radius: 100px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #A5B4FC;
+      letter-spacing: 0.06em;
+      margin-bottom: 64px;
+      width: fit-content;
+    }
+
+    .fact-star {
+      font-size: 22px;
+    }
+
+    .fact-h2 {
+      font-family: var(--font-heading);
+      font-size: 78px;
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      color: var(--text-1);
+      margin-bottom: 52px;
+    }
+
+    /* Highlighted fact block */
+    .fact-block {
+      background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(56,189,248,0.08));
+      border-radius: 0 24px 24px 0;
+      border-left: 6px solid;
+      border-image: linear-gradient(180deg, #6366F1, #38BDF8) 1;
+      padding: 52px 60px;
+    }
+
+    .fact-block p {
+      font-size: 44px;
+      line-height: 1.60;
+      color: #E2E8F0;
+      font-weight: 400;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════
+       CTA SLIDE
+    ═══════════════════════════════════════════════════════ */
+    .slide-cta {
+      width: 1080px;
+      height: 1350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .cta-orb-top {
+      width: 900px; height: 900px;
+      background: #6366F1;
+      opacity: 0.11;
+      top: -380px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .cta-orb-bot {
+      width: 600px; height: 600px;
+      background: #38BDF8;
+      opacity: 0.08;
+      bottom: -280px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 var(--s4);
+      width: 100%;
+      max-width: 940px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-eyebrow {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .cta-h2 {
+      font-family: var(--font-heading);
+      font-size: 98px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2.5px;
+      background: linear-gradient(135deg, #F1F5F9 20%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 28px;
+    }
+
+    .cta-subtitle {
+      font-size: 38px;
+      color: var(--text-2);
+      line-height: 1.55;
+      font-weight: 400;
+      margin-bottom: 80px;
+      max-width: 800px;
+    }
+
+    /* Action buttons */
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      width: 720px;
+      margin-bottom: 72px;
+    }
+
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 32px 52px;
+      border-radius: 22px;
+      width: 100%;
+    }
+
+    .cta-btn-primary {
+      background: var(--accent-grad);
+      box-shadow: 0 20px 60px rgba(99,102,241,0.35);
+    }
+
+    .cta-btn-secondary {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cta-btn-icon {
+      font-size: 44px;
+      flex-shrink: 0;
+    }
+
+    .cta-btn-text {
+      font-family: var(--font-heading);
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--text-1);
+      text-align: left;
+    }
+
+    .cta-brand {
+      font-family: var(--font-heading);
+      font-size: 34px;
+      font-weight: 700;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+
   </style>
 </head>
 <body>
-  {{#if (eq templateType 'Cover')}}
-    <div class="container template-cover">
-      <h1>{{title}}</h1>
-      <p class="accent">{{content}}</p>
+
+{{!-- ══════════════════════════════════════════════════════
+     COVER SLIDE
+══════════════════════════════════════════════════════ --}}
+{{#if (eq templateType 'Cover')}}
+
+<div class="slide-cover">
+  <div class="dot-grid"></div>
+  <div class="orb cover-orb-a"></div>
+  <div class="orb cover-orb-b"></div>
+
+  <div class="cover-inner">
+    <div class="cover-badge">
+      <span class="cover-badge-dot"></span>
+      @knowledge_is_dewine18
     </div>
-  {{else if (eq templateType 'CTA')}}
-    <div class="container template-cta">
-      <h2>{{title}}</h2>
-      <p>{{content}}</p>
+
+    <h1 class="cover-h1">{{title}}</h1>
+    <p class="cover-subtitle">{{content}}</p>
+
+    <div class="cover-swipe">
+      <span>Swipe to learn</span>
+      <div class="cover-swipe-arrow">→</div>
     </div>
-  {{else if (eq templateType 'Fact')}}
-    <div class="slide-badge">{{slideNumber}}/7</div>
-    <div class="container">
-      <h2>{{title}}</h2>
-      <div class="template-fact">
-        <p>{{content}}</p>
+  </div>
+
+  <div class="cover-watermark">@knowledge_is_dewine18</div>
+</div>
+
+
+{{!-- ══════════════════════════════════════════════════════
+     CTA SLIDE
+══════════════════════════════════════════════════════ --}}
+{{else if (eq templateType 'CTA')}}
+
+<div class="slide-cta">
+  <div class="dot-grid"></div>
+  <div class="orb cta-orb-top"></div>
+  <div class="orb cta-orb-bot"></div>
+
+  <div class="cta-inner">
+    <p class="cta-eyebrow">Found this useful?</p>
+    <h2 class="cta-h2">{{title}}</h2>
+    <p class="cta-subtitle">{{content}}</p>
+
+    <div class="cta-buttons">
+      <div class="cta-btn cta-btn-primary">
+        <span class="cta-btn-icon">🔖</span>
+        <span class="cta-btn-text">Save this post</span>
+      </div>
+      <div class="cta-btn cta-btn-secondary">
+        <span class="cta-btn-icon">👤</span>
+        <span class="cta-btn-text">Follow for more</span>
       </div>
     </div>
-  {{else}}
-    <div class="slide-badge">{{slideNumber}}/7</div>
-    <div class="container">
-      <h2 class="accent">{{title}}</h2>
+
+    <span class="cta-brand">@knowledge_is_dewine18</span>
+  </div>
+</div>
+
+
+{{!-- ══════════════════════════════════════════════════════
+     FACT SLIDE
+══════════════════════════════════════════════════════ --}}
+{{else if (eq templateType 'Fact')}}
+
+<div class="slide-fact">
+  <div class="dot-grid"></div>
+  <div class="orb fact-orb-a"></div>
+  <div class="orb fact-orb-b"></div>
+
+  <div class="progress-track">
+    <div class="progress-fill" style="width: calc({{slideNumber}} * 14.28%)"></div>
+  </div>
+
+  <div class="fact-body">
+    <div class="fact-badge">
+      <span class="fact-star">✦</span>
+      Did You Know?
+    </div>
+    <h2 class="fact-h2">{{title}}</h2>
+    <div class="fact-block">
       <p>{{content}}</p>
     </div>
-  {{/if}}
-
-  <div class="footer">
-    <span>@ai-insta</span>
-    <span>Swipe ➡️</span>
   </div>
+
+  <div class="slide-footer">
+    <span class="footer-brand">@knowledge_is_dewine18</span>
+    <div class="footer-swipe">
+      <span>{{slideNumber}} / 7</span>
+      <div class="swipe-pill">→</div>
+    </div>
+  </div>
+</div>
+
+
+{{!-- ══════════════════════════════════════════════════════
+     CONTENT SLIDE  (Definition / Concept / Example)
+══════════════════════════════════════════════════════ --}}
+{{else}}
+
+<div class="slide-content">
+  <div class="dot-grid"></div>
+  <div class="orb content-orb"></div>
+
+  <div class="progress-track">
+    <div class="progress-fill" style="width: calc({{slideNumber}} * 14.28%)"></div>
+  </div>
+
+  <div class="ghost-number">{{slideNumber}}</div>
+
+  <div class="content-body">
+    <div class="meta-row">
+      <span class="template-label">{{templateType}}</span>
+      <span class="slide-counter">{{slideNumber}} / 7</span>
+    </div>
+
+    <h2 class="content-h2">{{title}}</h2>
+
+    <div class="glass-card content-card">
+      <p>{{content}}</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span class="footer-brand">@knowledge_is_dewine18</span>
+    <div class="footer-swipe">
+      <div class="swipe-pill">→</div>
+    </div>
+  </div>
+</div>
+
+{{/if}}
+
 </body>
 </html>

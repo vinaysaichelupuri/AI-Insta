@@ -41,7 +41,9 @@ export const exportSlidesToPng = async (slides: ISlide[], postId: string): Promi
       slideNumber: slide.slideNumber
     });
 
-    await page.setContent(html, { waitUntil: 'load' });
+    await page.setContent(html, { waitUntil: 'load', timeout: 60000 });
+    // Wait for all web fonts (Google Fonts CDN) to finish loading
+    await page.evaluate(() => (document as any).fonts.ready);
     
     const imagePath = path.join(outDir, `slide_${slide.slideNumber}.png`);
     await page.screenshot({ path: imagePath, type: 'png' });

@@ -10,11 +10,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@google/genai": "^2.8.0",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
+    "handlebars": "^4.7.9",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.6.3"
+    "mongoose": "^9.6.3",
+    "puppeteer": "^25.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

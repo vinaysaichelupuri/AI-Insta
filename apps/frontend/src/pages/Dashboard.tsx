@@ -3,7 +3,7 @@ import { TopicSubmissionForm } from "../components/TopicSubmissionForm";
 import { useAuth } from "../context/AuthContext";
 
 export const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -11,7 +11,7 @@ export const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">AI-Insta Dashboard</h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, {user?.name}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, Creator</span>
             <button
               onClick={logout}
               className="text-sm px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"

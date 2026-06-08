@@ -1,50 +1,403 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# AI-Insta Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-First Development (NON-NEGOTIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Every feature begins with a specification before implementation.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+Requirements:
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+* PRD → Epic → Feature Spec → Tasks
+* No coding before approved specification
+* Every task must map back to an approved requirement
+* Implementation must never introduce functionality not defined in specifications
+* Any requirement change must update the specification first
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Rule:
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+"Spec is the source of truth."
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+---
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### II. AI-Agent Driven Engineering
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Development is performed through specialized AI agents with clearly defined responsibilities.
+
+Planner Agent Responsibilities:
+
+* Analyze requirements
+* Create architecture
+* Define APIs
+* Define database schema
+* Create implementation tasks
+* Identify dependencies
+* Assess risks
+
+Developer Agent Responsibilities:
+
+* Implement approved tasks only
+* Follow architecture decisions
+* Generate tests
+* Update documentation
+
+Rule:
+
+Agents cannot modify responsibilities outside their defined scope.
+
+---
+
+### III. Modular Architecture
+
+The system must be developed as independent modules.
+
+Current Modules:
+* Content Generation Module
+* Carousel Rendering Module
+* Approval Workflow Module
+* Instagram Publishing Module
+* Scheduler Module
+* History Module
+
+Requirements:
+
+* Loose coupling
+* Clear interfaces
+* Independent testing
+* Independent deployment readiness
+
+Rule:
+
+Modules communicate through contracts, not direct assumptions.
+
+---
+
+### IV. API Contract First
+
+Every API must be defined before implementation.
+
+Requirements:
+
+* Endpoint definition
+* Request schema
+* Response schema
+* Error schema
+* Validation rules
+
+Rule:
+
+Backend implementation must match approved contracts exactly.
+
+---
+
+### V. Testability By Design
+
+Every feature must be testable.
+
+Required Tests:
+
+* Unit Tests
+* Integration Tests
+* End-to-End Tests
+
+Critical Flows Requiring E2E Coverage:
+
+* Topic Collection
+* Content Generation
+* Approval Workflow
+* Instagram Publishing
+* Regeneration Flow
+
+Rule:
+
+No feature is complete without validation.
+
+---
+
+## Technology Standards
+
+### Backend
+
+Required Stack:
+
+* Node.js
+* TypeScript
+* Express
+
+Requirements:
+
+* Strict TypeScript mode enabled
+* Layered architecture
+* Dependency injection preferred
+
+Layers:
+
+* Routes
+* Controllers
+* Services
+* Repositories
+* Infrastructure
+
+---
+
+### Database
+
+Primary Database:
+
+* MongoDB
+
+Requirements:
+
+* Schema validation
+* Indexing strategy documented
+* Soft delete support where applicable
+
+Collections:
+
+* Posts
+* Slides
+* Images
+* Approval Requests
+* Publishing Logs
+
+---
+
+### AI Layer
+
+Primary Provider:
+
+* OpenAI
+
+Responsibilities:
+
+* Topic Expansion
+* Carousel Generation
+* Caption Generation
+
+Requirements:
+
+* Prompt versioning
+* Prompt templates stored centrally
+* AI responses logged
+* Regeneration history maintained
+
+Rule:
+
+Prompts are treated as production assets.
+
+---
+
+### Storage
+
+Primary Storage:
+
+* Cloudinary
+
+Requirements:
+
+* Versioned assets
+* Secure URLs
+* Lifecycle management
+
+---
+
+### External Integrations
+
+Supported Integrations:
+
+* Instagram Graph API
+* Cloudinary
+* OpenAI
+
+Requirements:
+
+* Retry mechanisms
+* Rate limit handling
+* Failure logging
+* Idempotent operations
+
+Rule:
+
+External service failures must never corrupt internal state.
+
+---
+
+## Security Requirements
+
+### Secrets Management
+
+Forbidden:
+
+* Hardcoded API keys
+* Hardcoded access tokens
+
+Required:
+
+* Environment variables
+* Secret rotation support
+
+---
+
+### Authentication
+
+Requirements:
+
+* Admin-only actions protected
+* Webhook verification mandatory
+* Signature validation mandatory
+
+---
+
+### Data Protection
+
+Requirements:
+
+* Encrypt sensitive credentials
+* Mask secrets in logs
+* Store minimum required data
+
+---
+
+## AI Content Quality Standards
+
+Every generated post must satisfy:
+
+### Accuracy
+
+* Factually correct
+* No hallucinated information
+
+### Readability
+
+* Simple language
+* Mobile-first formatting
+
+### Educational Value
+
+Each carousel must include:
+
+* Hook
+* Explanation
+* Key Learnings
+* Interesting Fact
+* Summary
+
+### Brand Consistency
+
+All posts must:
+
+* Follow page tone
+* Follow page style guide
+* Follow template structure
+
+---
+
+## Development Workflow
+
+### Feature Lifecycle
+
+1. PRD Created
+2. Specification Approved
+3. Architecture Reviewed
+4. Tasks Generated
+5. Tests Defined
+6. Implementation Started
+7. Validation Completed
+8. Production Ready
+
+Rule:
+
+No stage may be skipped.
+
+---
+
+### Pull Request Requirements
+
+Every PR must include:
+
+* Requirement Reference
+* Test Evidence
+* Screenshots (if applicable)
+* API Changes
+* Database Changes
+
+---
+
+### Definition of Done
+
+A feature is complete only when:
+
+* Specification satisfied
+* Tests passing
+* Documentation updated
+* Logging added
+* Error handling added
+* Review completed
+
+---
+
+## Operational Standards
+
+### Observability
+
+Required:
+
+* Structured logging
+* Error tracking
+* Request tracing
+
+Critical Events:
+
+* Topic Received
+* Content Generated
+* Approval Requested
+* Approval Received
+* Post Published
+* Publishing Failed
+
+---
+
+### Reliability
+
+Targets:
+
+* 99% message delivery success
+* 99% publishing success
+* Automatic retries for transient failures
+
+---
+
+### Performance
+
+Targets:
+
+Content Generation:
+
+* Under 30 seconds
+
+Carousel Rendering:
+
+* Under 2 minutes
+
+Instagram Publishing:
+
+* Under 1 minute
+
+---
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution overrides all development preferences, implementation shortcuts, and undocumented practices.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Any change must include:
+
+1. Reason for change
+2. Impact analysis
+3. Migration strategy
+4. Approval from project owner
+
+All planners, developers, reviewers, and AI agents must verify compliance before marking work complete.
+
+Version: 1.0.0
+Ratified: 2026-06-08
+Last Amended: 2026-06-08

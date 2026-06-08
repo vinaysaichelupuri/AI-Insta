@@ -14,3 +14,8 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+export const submitTopic = async (topic: string, confirmDuplicate: boolean = false) => {
+  const response = await api.post('/api/topics', { topic, confirmDuplicate });
+  return response.data;
+};

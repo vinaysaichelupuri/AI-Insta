@@ -54,15 +54,22 @@ export const PreviewCarousel: React.FC<PreviewCarouselProps> = ({ post, slides, 
 
   const slide = slides[currentSlide];
 
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const imageUrl = `${baseUrl}/assets/generated/${post._id}/slide_${slide.slideNumber}.png`;
+
   return (
     <div className="preview-carousel p-4 border rounded shadow-md w-full max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-4">Preview: {post.topic}</h2>
       
-      <div className="relative h-96 bg-gray-100 flex items-center justify-center p-4 text-center">
-        <div>
-          <h3 className="text-lg font-semibold">{slide.title}</h3>
-          <p className="mt-2">{slide.content}</p>
-        </div>
+      <div className="relative h-[450px] bg-gray-100 flex items-center justify-center p-0 text-center overflow-hidden">
+        <img 
+          src={imageUrl} 
+          alt={`Slide ${slide.slideNumber}`} 
+          className="w-full h-full object-contain"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/1080x1350?text=Image+Not+Found';
+          }}
+        />
         
         <button 
           className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full"

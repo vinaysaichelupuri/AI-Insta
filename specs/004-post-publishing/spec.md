@@ -1,10 +1,27 @@
 # Feature Specification: Post Publishing Workflow
 
-**Feature Branch**: `[###-feature-name]`
+**Feature Branch**: `master`
 
 **Created**: 2026-06-08
 
-**Status**: Draft
+**Status**: In Progress — Bug Fixes Applied (2026-06-08)
+
+## Bugs Fixed (2026-06-08 Audit)
+
+| ID | Component | Bug | Fix Applied |
+|----|-----------|-----|-------------|
+| BUG-001 | `backend/routes/auth.ts` | Login route (`/api/auth/login`) was never registered in `index.ts`. The wrong `authRoutes.ts` (Instagram token only) was mounted instead. | Registered `routes/auth.ts` (real login) AND `routes/authRoutes.ts` (Instagram token) both at `/api/auth`. |
+| BUG-002 | `controllers/auth.ts` | Imported non-existent `../config/env` module, causing startup crash. | Replaced with `process.env.JWT_SECRET` with a dev fallback. |
+| BUG-003 | `services/agentService.ts` | Used invalid status `"GENERATING"` not in Post schema enum. | Changed to `"RENDERING"`. |
+| BUG-004 | `services/agentService.ts` | Used invalid status `"REVIEW"` not in Post schema enum. | Changed to `"PENDING_REVIEW"`. |
+| BUG-005 | `routes/postRoutes.ts` | Missing `GET /:id` and `GET /:id/slides` endpoints; frontend could never fetch post or slide data after generation. | Added both GET endpoints. |
+| BUG-006 | `pages/Dashboard.tsx` | After topic submission nothing happened. Dashboard never polled for generation status or rendered `PreviewCarousel`. | Added polling loop (every 4s) that stops when status leaves `RENDERING`/`DRAFT`, then loads slides and renders `PreviewCarousel`. |
+| BUG-007 | `services/api.ts` | `baseURL` was wrong (`localhost:3001` instead of `localhost:4000`). Missing `getPost` and `getSlides` functions. | Fixed baseURL and added missing functions. |
+| BUG-008 | `components/TopicSubmissionForm.tsx` | No `onSubmitted` callback to propagate new post ID to parent. | Added `onSubmitted(postId)` prop. |
+| BUG-009 | `pages/Login.tsx` | Login was non-functional with no redirect after success and no way to create accounts. | Added Register tab, proper redirect after login, and clear error messages. |
+| BUG-010 | `backend/.env` | Missing `JWT_SECRET` and explicit `MONGODB_URI`. | Added both environment variables. |
+
+
 
 **Input**: User description: "create the spec file for @[docs/implementation-plan.md] module-6,7,8,9"
 

@@ -7,7 +7,7 @@ export const triggerGeneration = async (topic: string, postId: string) => {
   
   try {
     // 1. Update Post Status
-    await Post.findByIdAndUpdate(postId, { status: "GENERATING" });
+    await Post.findByIdAndUpdate(postId, { status: "RENDERING" });
 
     // 2. Generate Text Content (with retries for transient failures)
     let generatedContent;
@@ -59,7 +59,7 @@ export const triggerGeneration = async (topic: string, postId: string) => {
     }
 
     // 7. Update final status
-    await Post.findByIdAndUpdate(postId, { status: "REVIEW" });
+    await Post.findByIdAndUpdate(postId, { status: "PENDING_REVIEW" });
     console.log(`[AgentService] Pipeline completed successfully for post ${postId}`);
 
   } catch (error) {

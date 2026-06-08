@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { submitTopic } from "../services/api";
 
-export const TopicSubmissionForm: React.FC = () => {
+interface TopicSubmissionFormProps {
+  /** Called with the new post's ID once submission succeeds */
+  onSubmitted?: (postId: string) => void;
+}
+
+export const TopicSubmissionForm: React.FC<TopicSubmissionFormProps> = ({ onSubmitted }) => {
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
 
   const validate = () => {
@@ -25,13 +29,15 @@ export const TopicSubmissionForm: React.FC = () => {
 
     setLoading(true);
     setError(null);
-    setSuccess(null);
     setDuplicateWarning(null);
 
     try {
       const result = await submitTopic(topic, confirmDuplicate);
-      setSuccess(`Content generation started for: ${result.topic}`);
       setTopic("");
+      // Propagate the new post ID to the parent (Dashboard) so it can poll
+      if (onSubmitted && result.id) {
+        onSubmitted(result.id);
+      }
     } catch (err: any) {
       if (err.response?.status === 409) {
         setDuplicateWarning(err.response.data.message || "Duplicate topic found. Proceed?");
@@ -78,18 +84,12 @@ export const TopicSubmissionForm: React.FC = () => {
           </div>
         )}
 
-        {success && (
-          <div className="p-3 bg-green-50 text-green-700 text-sm rounded-md">
-            {success}
-          </div>
-        )}
-
         <button
           type="submit"
           disabled={loading || !!duplicateWarning}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
         >
-          {loading ? "Submitting..." : "Generate Content"}
+          {loading ? "Submitting…" : "Generate Content"}
         </button>
       </form>
 

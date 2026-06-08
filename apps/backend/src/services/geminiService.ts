@@ -17,7 +17,7 @@ export const generateCarousel = async (topic: string): Promise<GeneratedContent>
   
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: `Generate an educational Instagram carousel about "${topic}". The content must be factually accurate, educational in tone, and readable in under 60 seconds. Return EXACTLY 7 slides following this structure: Hook (Cover), Definition, Concept, Concept, Example, Interesting Fact, Call To Action (CTA). Also provide a caption with an introduction, key takeaway, and hashtags.`,
+    contents: `Generate an educational Instagram carousel about "${topic}". The content must be factually accurate, highly engaging, and educational in tone. Provide a moderate amount of detail (about 2 to 3 detailed sentences per slide) so it feels premium and informative, but not overwhelming. Return EXACTLY 7 slides following this structure: Hook (Cover), Definition, Concept, Concept, Example, Interesting Fact, Call To Action (CTA). Also provide a caption with an introduction, key takeaway, and hashtags.`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -30,8 +30,8 @@ export const generateCarousel = async (topic: string): Promise<GeneratedContent>
               type: Type.OBJECT,
               properties: {
                 slideNumber: { type: Type.INTEGER, description: "Slide sequence number (1-7)" },
-                title: { type: Type.STRING, description: "Short, catchy title for the slide" },
-                content: { type: Type.STRING, description: "Main content of the slide (short and concise)" },
+                title: { type: Type.STRING, description: "Catchy title for the slide" },
+                content: { type: Type.STRING, description: "Main content of the slide (about 2 to 3 informative sentences. DO NOT make it a single short sentence)." },
                 templateType: { 
                   type: Type.STRING, 
                   enum: ["Cover", "Definition", "Fact", "CTA", "Concept", "Example"],

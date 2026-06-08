@@ -50,7 +50,7 @@ export const triggerGeneration = async (topic: string, postId: string) => {
         const isQuotaError = err?.status === 429 || err?.message?.includes('"code":429');
         const isDaily = isDailyQuotaExhausted(err);
 
-        console.error(`[AgentService] Gemini API failure (Attempt ${attempt}/${MAX_ATTEMPTS}) [429=${isQuotaError}, daily=${isDaily}]`);
+        console.error(`[AgentService] Gemini API failure (Attempt ${attempt}/${MAX_ATTEMPTS}) [429=${isQuotaError}, daily=${isDaily}]`, err);
 
         if (isDaily) {
           // Daily quota exhausted — no point retrying today

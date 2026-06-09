@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { Post, Slide, GeneratedAsset } from "../models/Post";
-import { User } from "../models/User";
 import { InstagramService } from "../services/instagramService";
 import { exportService } from "../services/exportService";
+import { resolveRequestUser } from "../utils/authUser";
 
 const router = Router();
 
@@ -121,7 +121,7 @@ router.post("/:id/publish", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Post must be APPROVED before publishing" });
     }
 
-    const user = await User.findOne();
+    const user = await resolveRequestUser(req);
     if (!user || !user.instagramAccessToken || !user.instagramAccountId) {
       return res.status(400).json({ error: "Instagram account not linked. Please configure Instagram credentials." });
     }

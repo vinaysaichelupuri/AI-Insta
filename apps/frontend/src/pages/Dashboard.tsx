@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { InstagramConnectionCard } from "../components/InstagramConnectionCard";
 import { TopicSubmissionForm } from "../components/TopicSubmissionForm";
 import { PreviewCarousel } from "../components/PreviewCarousel";
 import { useAuth } from "../context/AuthContext";
@@ -7,7 +8,7 @@ import { getPost, getSlides, IPost, ISlide } from "../services/api";
 const POLLING_STATUSES = new Set(["DRAFT", "RENDERING"]);
 
 export const Dashboard: React.FC = () => {
-  const { logout } = useAuth();
+  const { token, user, logout } = useAuth();
 
   // After submission we track the new post ID
   const [pendingPostId, setPendingPostId] = useState<string | null>(null);
@@ -81,18 +82,29 @@ export const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">AI-Insta Dashboard</h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600 dark:text-gray-300">Welcome, Creator</span>
-            <button
-              onClick={logout}
-              className="text-sm px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
-            >
-              Logout
-            </button>
+            {token && (
+              <>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Welcome, {user?.email || "Creator"}
+                </span>
+                <button
+                  onClick={logout}
+                  className="text-sm px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {token && (
+          <div className="mb-8">
+            <InstagramConnectionCard />
+          </div>
+        )}
 
         {/* ── Topic Submission ─────────────────────────────────────────── */}
         {!generatingPost && (

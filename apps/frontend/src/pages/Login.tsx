@@ -21,7 +21,7 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/api/auth/login', { email, password });
-      login(res.data.token);
+      login(res.data.token, res.data.user);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Check your credentials.');

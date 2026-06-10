@@ -38,7 +38,7 @@ export const InstagramConnectionCard = () => {
     try {
       setConnecting(true);
       setError(null);
-      const redirectUri = `${window.location.origin}/instagram/callback`;
+      const redirectUri = `${window.location.origin}/instagram/callback`.replace(/^http:\/\/localhost/, 'https://localhost');
       const response = await getInstagramConnectUrl(redirectUri);
       window.location.href = response.url;
     } catch (err: any) {

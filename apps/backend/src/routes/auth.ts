@@ -11,10 +11,11 @@ router.post('/login', login);
 // In production this would be replaced by a proper signup flow
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password required' });
     }
+    email = email.toLowerCase().trim();
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(409).json({ error: 'User already exists' });

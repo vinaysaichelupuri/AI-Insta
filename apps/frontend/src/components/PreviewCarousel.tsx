@@ -54,8 +54,7 @@ export const PreviewCarousel: React.FC<PreviewCarouselProps> = ({ post, slides, 
 
   const slide = slides[currentSlide];
 
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-  const imageUrl = `${baseUrl}/assets/generated/${post._id}/slide_${slide.slideNumber}.png`;
+  const imageUrl = `/assets/generated/${post._id}/slide_${slide.slideNumber}.png`;
 
   return (
     <div className="preview-carousel p-4 border rounded shadow-md w-full max-w-md mx-auto">

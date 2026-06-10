@@ -100,8 +100,10 @@ router.get("/instagram/connect-url", async (req: Request, res: Response) => {
   });
   params.set("force_reauth", "true");
 
+  const url = `${instagramOauthBaseUrl}?${params.toString()}`;
+  
   return res.status(200).json({
-    url: `${instagramOauthBaseUrl}?${params.toString()}`,
+    url,
     scopes,
   });
 });

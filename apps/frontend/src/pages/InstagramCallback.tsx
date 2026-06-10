@@ -25,7 +25,7 @@ export const InstagramCallback = () => {
       }
 
       try {
-        const redirectUri = `${window.location.origin}/instagram/callback`.replace(/^http:\/\/localhost/, 'https://localhost');
+        const redirectUri = import.meta.env.VITE_INSTAGRAM_REDIRECT_URI || `${window.location.origin}/instagram/callback`.replace(/^http:\/\/localhost/, 'https://localhost');
         await exchangeInstagramCode(code, redirectUri);
         navigate("/", { replace: true });
       } catch (err: any) {

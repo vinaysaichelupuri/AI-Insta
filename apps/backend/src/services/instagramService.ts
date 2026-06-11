@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export class InstagramService {
-  private readonly baseUrl = 'https://graph.facebook.com/v19.0';
+  private readonly baseUrl = `https://graph.instagram.com/${process.env.META_GRAPH_VERSION || 'v19.0'}`;
 
   constructor(
     private readonly accessToken: string,

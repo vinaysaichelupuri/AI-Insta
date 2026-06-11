@@ -21,10 +21,13 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/api/auth/login', { email, password });
-      login(res.data.token);
+      console.log("[LOGIN SUCCESS]", res.data);
+      login(res.data.token, res.data.user);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Check your credentials.');
+      console.error("[LOGIN ERROR]", err);
+      const errorMessage = err.response?.data?.message || err.message || 'Login failed. Check your credentials.';
+      setError(`Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

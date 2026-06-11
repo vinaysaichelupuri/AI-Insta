@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-ro
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Dashboard } from "./pages/Dashboard";
 import { HistoryDashboard } from "./pages/HistoryDashboard";
+import { InstagramCallback } from "./pages/InstagramCallback";
 import { Login } from "./pages/Login";
 import "./App.css";
 
@@ -43,6 +44,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/history" element={<HistoryDashboard />} />
+              <Route path="/instagram/callback" element={<InstagramCallback />} />
               <Route path="/login" element={<Login />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

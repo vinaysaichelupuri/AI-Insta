@@ -25,7 +25,7 @@ export interface IPost {
   publishedAt?: string;
   caption?: string;
   hashtags?: string[];
-  failReason?: string;  // set when status is FAILED
+  failReason?: string; 
 }
 
 export interface ISlide {
@@ -76,5 +76,25 @@ export const publishPost = async (id: string) => {
 
 export const exportPostImages = async (id: string) => {
   const response = await api.post(`/api/posts/${id}/export`);
+  return response.data;
+};
+
+export const getInstagramConnectionStatus = async () => {
+  const response = await api.get('/api/auth/instagram/status');
+  return response.data;
+};
+
+export const getInstagramConnectUrl = async (redirectUri: string) => {
+  const response = await api.get('/api/auth/instagram/connect-url', {
+    params: { redirectUri },
+  });
+  return response.data;
+};
+
+export const exchangeInstagramCode = async (code: string, redirectUri: string) => {
+  const response = await api.post('/api/auth/instagram/exchange-code', {
+    code,
+    redirectUri,
+  });
   return response.data;
 };

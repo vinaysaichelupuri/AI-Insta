@@ -41,6 +41,21 @@ export class InstagramService {
       });
       const carouselContainerId = carouselRes.data.id;
 
+      // Wait for the carousel container to finish processing
+      let isReady = false;
+      let attempts = 0;
+      while (!isReady && attempts < 15) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        const statusUrl = `${this.baseUrl}/${carouselContainerId}?fields=status_code&access_token=${this.accessToken}`;
+        const statusRes = await axios.get(statusUrl);
+        if (statusRes.data.status_code === 'FINISHED') {
+          isReady = true;
+        } else if (statusRes.data.status_code === 'ERROR') {
+          throw new Error('Instagram failed to process the carousel container');
+        }
+        attempts++;
+      }
+
       // 3. Publish the carousel container
       const publishUrl = `${this.baseUrl}/${this.accountId}/media_publish`;
       const publishRes = await axios.post(publishUrl, {

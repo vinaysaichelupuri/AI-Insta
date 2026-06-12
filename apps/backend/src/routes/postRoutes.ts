@@ -130,7 +130,7 @@ router.post("/:id/publish", async (req: Request, res: Response) => {
     
     // Fetch real generated asset URLs
     const assets = await GeneratedAsset.find({ postId: id });
-    const baseUrl = process.env.BASE_URL || "http://localhost:4000";
+    const baseUrl = process.env.BACKEND_URL || process.env.BASE_URL || "http://localhost:4000";
     const imageUrls = assets.map(a => {
       const assetPart = a.imagePath.split("assets/").pop();
       return `${baseUrl}/assets/${assetPart}`;

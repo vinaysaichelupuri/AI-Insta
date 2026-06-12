@@ -9,6 +9,7 @@
   "scripts": {
     "dev:frontend": "npm run dev --workspace=@ai-integration/frontend",
     "dev:backend": "npm run dev --workspace=@ai-integration/backend",
+    "dev:mobile": "cd apps/mobile && npx expo start --tunnel",
     "build": "npm run build --workspaces",
     "build:frontend": "npm run build --workspace=@ai-integration/frontend",
     "build:backend": "npm run build --workspace=@ai-integration/backend",

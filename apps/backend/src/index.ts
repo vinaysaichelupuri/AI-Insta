@@ -8,6 +8,7 @@ import topicRoutes from "./routes/topicRoutes";
 import loginRoutes from "./routes/auth";          // real login handler
 import instagramAuthRoutes from "./routes/authRoutes"; // instagram token handler
 import postRoutes from "./routes/postRoutes";
+import deviceRoutes from "./routes/deviceRoutes";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
@@ -25,6 +26,7 @@ app.use("/api/topics", topicRoutes);
 app.use("/api/auth", loginRoutes);                // POST /api/auth/login
 app.use("/api/auth", instagramAuthRoutes);        // POST /api/auth/instagram/token
 app.use("/api/posts", postRoutes);
+app.use("/api/devices", deviceRoutes);            // POST /api/devices/register (mobile push tokens)
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json({

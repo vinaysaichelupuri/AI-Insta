@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
   instagramTokenExpiresAt: {
     type: Date,
   },
+  expoPushTokens: {
+    type: [String],
+    default: [],
+  },
 }, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);
